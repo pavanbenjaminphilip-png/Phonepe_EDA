@@ -167,15 +167,20 @@ with tab1:
         st.markdown("**Payment Category Breakdown**")
         fig = px.pie(df_type, values='Total_Amount', names='Transaction_type',
                      hole=0.5, color_discrete_sequence=px.colors.qualitative.Set3)
+        fig.update_traces(textposition='outside', textinfo='percent+label', 
+                          hovertemplate='<b>%{label}</b><br>Value: ₹%{value:,.2f}<br>Percentage: %{percent}')
         fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-                          font_color='white', legend=dict(font=dict(color='white')))
+                          font_color='white', showlegend=False,
+                          margin=dict(t=0, b=0, l=0, r=0))
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         st.markdown("**Top 10 States by Transaction Value**")
+        df_top_states['State'] = df_top_states['State'].str.title()
         fig2 = px.bar(df_top_states.sort_values('Total_Amount'), x='Total_Amount', y='State',
                       orientation='h', color='Total_Amount', color_continuous_scale='Viridis',
                       labels={'Total_Amount': 'Total (₹)', 'State': ''})
+        fig2.update_traces(hovertemplate='<b>%{y}</b><br>Value: ₹%{x:,.2f}')
         fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                            font_color='white', coloraxis_showscale=False)
         st.plotly_chart(fig2, use_container_width=True)
@@ -215,19 +220,24 @@ with tab2:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("**State-wise Transaction Distribution**")
+        df_state_map['State'] = df_state_map['State'].str.title()
         fig = px.bar(df_state_map.head(15).sort_values('Total_Amount'), 
                      x='Total_Amount', y='State', orientation='h',
                      color='Total_Amount', color_continuous_scale='Plasma',
                      labels={'Total_Amount': 'Total Amount (₹)', 'State': ''})
+        fig.update_traces(hovertemplate='<b>%{y}</b><br>Value: ₹%{x:,.2f}')
         fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                           font_color='white', coloraxis_showscale=False)
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         st.markdown("**Top 15 Districts by Transaction Value**")
+        df_dist['District'] = df_dist['District'].str.title()
+        df_dist['State'] = df_dist['State'].str.title()
         fig2 = px.scatter(df_dist, x='Total_Count', y='Total_Amount',
                           size='Total_Amount', color='State', hover_name='District',
                           labels={'Total_Count': 'Transaction Count', 'Total_Amount': 'Transaction Value (₹)'})
+        fig2.update_traces(hovertemplate='<b>%{hovertext}</b> (%{marker.color})<br>Count: %{x:,.0f}<br>Value: ₹%{y:,.2f}')
         fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color='white')
         st.plotly_chart(fig2, use_container_width=True)
 
