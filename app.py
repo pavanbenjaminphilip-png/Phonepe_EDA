@@ -100,7 +100,7 @@ st.sidebar.info("SQL-powered analytics dashboard built on PhonePe Pulse data cov
 # --- KPI Row (SQL Aggregates) ---
 kpi1 = run_query(f"SELECT SUM(Transaction_amount) as total FROM aggregated_transaction WHERE Year={year} AND Quarter={quarter}")
 kpi2 = run_query(f"SELECT SUM(Transaction_count) as total FROM aggregated_transaction WHERE Year={year} AND Quarter={quarter}")
-kpi3 = run_query(f"SELECT SUM(Transaction_count) as total FROM aggregated_user WHERE Year={year} AND Quarter={quarter}")
+kpi3 = run_query(f"SELECT SUM(RegisteredUsers) as total FROM map_user WHERE Year={year} AND Quarter={quarter}")
 kpi4 = run_query(f"SELECT SUM(Transaction_amount) as total FROM aggregated_insurance WHERE Year={year} AND Quarter={quarter}")
 
 def fmt(val):
@@ -167,11 +167,13 @@ with tab1:
         st.markdown("**Payment Category Breakdown**")
         fig = px.pie(df_type, values='Total_Amount', names='Transaction_type',
                      hole=0.5, color_discrete_sequence=px.colors.qualitative.Set3)
-        fig.update_traces(textposition='outside', textinfo='percent+label', 
+        fig.update_traces(textposition='inside', textinfo='percent', 
                           hovertemplate='<b>%{label}</b><br>Value: ₹%{value:,.2f}<br>Percentage: %{percent}')
         fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-                          font_color='white', showlegend=False,
-                          margin=dict(t=0, b=0, l=0, r=0))
+                          font_color='white', showlegend=True,
+                          legend=dict(orientation="h", yanchor="bottom", y=-0.5, xanchor="center", x=0.5),
+                          margin=dict(t=10, b=10, l=10, r=10),
+                          uniformtext=dict(minsize=12, mode='hide'))
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
